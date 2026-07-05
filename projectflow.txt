@@ -9,4 +9,27 @@ how to create a new notebook by using (.ipynb) extension.
 # because if want to track it by DVC then we must push all these into gitignore.
 4>.Now git add, commit, push.
 
+# When we (add) it,there will be a warning:
+#warning: in the working copy of 'experiments/mynotebook.ipynb', LF will be replaced by CRLF the next time Git touches it
+
+This warning is simply about how different operating systems handle invisible line endings (the characters your computer uses every time you press Enter to start a new line of text or code).
+
+CRLF (Carriage Return Line Feed): Used natively by Windows. It uses two hidden characters (\r\n) to mark the end of a line.
+
+LF (Line Feed): Used natively by Mac and Linux (and often by interactive data science tools like Jupyter Notebooks/.ipynb files). It uses only a single hidden character (\n) to mark the end of a line.
+
+Why Git is telling you this:
+Your Jupyter Notebook file was originally saved using Linux-style line endings (LF). Because you are working on a Windows system,
+ Git is warning you that it is automatically converting those invisible line endings to Windows-style (CRLF) so that your local applications
+can read and modify the file smoothly without formatting glitches.
+
 also taught the concept of logger in detail.from 34 seconds.
+
+
+# Setting up DVC pipeline (without params):
+
+5>.Create DVC.yaml file and add stages to it.
+
+6>.DVC init then do DVC repo to test the pipeline automation.(Check DVC dag).
+
+7>.Now git add, commit, push.
