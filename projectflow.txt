@@ -1,0 +1,12 @@
+Building Pipeline:
+
+how to create a new notebook by using (.ipynb) extension.
+
+1>.Create a git repo and take it to VS Code .
+2>.Add src folder along with all componenets (run them individually).
+3>.Add data, models, reports directories to .gitignore file.
+
+# because if want to track it by DVC then we must push all these into gitignore.
+4>.Now git add, commit, push.
+
+also taught the concept of logger in detail.from 34 seconds.
