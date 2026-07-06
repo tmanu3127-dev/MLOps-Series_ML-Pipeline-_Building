@@ -5,6 +5,8 @@ import pickle
 import json
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
 import logging
+from dvclive import Live
+import yaml
 
 # Ensure the "logs" directory exists
 log_dir = 'logs'
@@ -27,6 +29,23 @@ file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
+
+def load_params(params_path: str) ->dict:
+    """Load parameters from a YAML file. """
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(file)
+        logger.debug('Parameters retrieved from %s', params_path)
+        return params
+    except FileNotFoundError:
+        logger.error('File not found: %s', params_path)
+        raise
+    except yaml.YAMLError as e:
+        logger.error('YAML error: %s', e)
+        raise
+    except Exception as e:
+        logger.error('YAML error: %s', e)
+        raise     
 
 def load_model(file_path: str):
     """ Load the trained model from a file."""
@@ -96,6 +115,7 @@ def save_metrics(metrics: dict, file_path: str) ->None:
 
 def main():
     try:
+        params = load_params(params_path='params.yaml')
         clf = load_model('./models/model.pkl')
         test_data = load_data('./data/processed/test_tfidf.csv')
 
@@ -103,6 +123,15 @@ def main():
         y_test = test_data.iloc[:, -1].values
 
         metrics = evaluate_model(clf, X_test, y_test)
+
+        # Experiment tracking using DVClive:
+        # 🚀 FIX: Pass dir="dvclive" so it forces a physical folder layout
+        with Live(dir="dvclive", save_dvc_exp=True) as live:
+            live.log_metric('accuracy', metrics['accuracy'])
+            live.log_metric('precision', metrics['precision'])
+            live.log_metric('recall', metrics['recall'])
+            
+            live.log_params(params)
 
         save_metrics(metrics, 'reports/metrics.json')
     except Exception as e:
